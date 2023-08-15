@@ -27,6 +27,9 @@ int driver2motor3in2 = 24;  // Direction control for Motor 3
 int driver2motor4in3 = 23;
 int driver2motor4in4 = 22;
 
+int potentiometer = A0;
+int speed = 0;
+
 
 #define M1_ENCODER_A 2  //  Motor 1 Encoder A
 #define M1_ENCODER_B 3  //  Motor 1 Encoder B
@@ -98,15 +101,23 @@ void loop() {
 
   if (runWheels == false) return;
 
-  setAllMotorSpeed(80);
+  potentiometer = analogRead(A0);
+  speed = potentiometer / 4; // potentiometer returns 0 to 1023
+
+  setAllMotorSpeed(speed);
 
   // run all wheels
   moveForward();
+  return;
 
-  moveLeft();
+  //moveLeft();
 
+  strafeRight();
+  delay(2500);
+  stopAllWheels();
 
-  delay(1000);
+  runWheels = false;
+
   // speedControl();
   //delay(1000);
 
@@ -151,6 +162,19 @@ void moveLeft() {
   digitalWrite(driver1motor2in4, LOW);
   digitalWrite(driver2motor3in1, HIGH);
   digitalWrite(driver2motor3in2, LOW);
+  digitalWrite(driver2motor4in3, HIGH);
+  digitalWrite(driver2motor4in4, LOW);
+}
+
+void strafeRight(){
+  //strafeRight	FORWARD	REVERSE	REVERSE	FORWARD
+  digitalWrite(driver1motor1in1, HIGH);
+  digitalWrite(driver1motor1in2, LOW);
+  digitalWrite(driver2motor3in1, LOW);
+  digitalWrite(driver2motor3in2, HIGH);
+
+  digitalWrite(driver1motor2in3, LOW);
+  digitalWrite(driver1motor2in4, HIGH);
   digitalWrite(driver2motor4in3, HIGH);
   digitalWrite(driver2motor4in4, LOW);
 }
