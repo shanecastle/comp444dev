@@ -1,7 +1,14 @@
 
 // Motor driver test
+// -----------------------------------------------------------
 
-#include <RPC.h>  // to boot the 2nd core
+// to boot the 2nd core
+#include <RPC.h>
+
+//the liquid crystal library contains commands for printing to the display
+#include <LiquidCrystal.h>
+
+
 
 //wiring:
 //           (PWM)               Encoder
@@ -42,17 +49,64 @@ int speed = 0;
 int redButtonPin = 65;
 int greenButtonPin = 64;
 
+// ultrasonic distances
+float distanceFront = 0;
+float distanceLeft = 0;
+float distanceRight = 0;
+float distanceBack = 0;
+
+// lcd screen setup
+LiquidCrystal lcd(59, 61, 63, 58, 60, 62);
+unsigned long messageDelay = 0;  // used to update screen once per second
+bool delayRunning = false;
+unsigned long DELAY_TIME = 1500;
+
+
+//distance sensor pins
+const int trig1Pin = 28;
+const int echo1Pin = 29;
+const int trig2Pin = 30;
+const int echo2Pin = 31;
+const int trig3Pin = 32;
+const int echo3Pin = 33;
+const int trig4Pin = 34;
+const int echo4Pin = 35;
+
+const int FRONT = 1;
+const int BACK = 2;
+const int LEFT = 3;
+const int RIGHT = 4;
+
+
 bool runWheels = false;
+
+String message = "";
 
 void setup() {
   RPC.begin();
 
+  //tell the lcd the display is 16 wide by 2 characters high
+  lcd.begin(16, 2);
+  lcd.clear();
+  messageDelay = millis();
+  delayRunning = true;
 
   // Serial.begin(9600);
   // Serial.write("Staring motor test");
 
+  // setup motor on/off buttons
   pinMode(redButtonPin, INPUT_PULLUP);
   pinMode(greenButtonPin, INPUT_PULLUP);
+
+  // setup distance sensors
+  pinMode(trig1Pin, OUTPUT);
+  pinMode(echo1Pin, INPUT);
+  pinMode(trig2Pin, OUTPUT);
+  pinMode(echo2Pin, INPUT);
+  pinMode(trig3Pin, OUTPUT);
+  pinMode(echo3Pin, INPUT);
+  pinMode(trig4Pin, OUTPUT);
+  pinMode(echo4Pin, INPUT);
 
   // Set motor speed control pins outputs
   pinMode(driver1motor1enA, OUTPUT);
@@ -92,6 +146,15 @@ void setup() {
 
 void loop() {
 
+  potentiometer = analogRead(A0);
+  speed = round(potentiometer / 4);  // potentiometer returns 0 to 1023
+
+  distanceFront = getDistance(FRONT);
+  distanceBack = getDistance(BACK);
+  distanceLeft = getDistance(LEFT);
+  distanceRight = getDistance(RIGHT);
+
+
   if (digitalRead(redButtonPin) == LOW) {
     runWheels = false;
     stopAllWheels();
@@ -99,21 +162,27 @@ void loop() {
     runWheels = true;
   }
 
-  if (runWheels == false) return;
+  showLcdMessage();
 
-  potentiometer = analogRead(A0);
-  speed = potentiometer / 4; // potentiometer returns 0 to 1023
+  if (runWheels == false) return;
 
   setAllMotorSpeed(speed);
 
   // run all wheels
-  moveForward();
-  return;
+  //moveForward();
+  // return;
 
   //moveLeft();
 
   strafeRight();
-  delay(2500);
+  delay(1500);
+
+  stopAllWheels();
+  delay(3000);
+
+  strafeLeft();
+  delay(1500);
+
   stopAllWheels();
 
   runWheels = false;
@@ -166,7 +235,7 @@ void moveLeft() {
   digitalWrite(driver2motor4in4, LOW);
 }
 
-void strafeRight(){
+void strafeRight() {
   //strafeRight	FORWARD	REVERSE	REVERSE	FORWARD
   digitalWrite(driver1motor1in1, HIGH);
   digitalWrite(driver1motor1in2, LOW);
@@ -177,6 +246,19 @@ void strafeRight(){
   digitalWrite(driver1motor2in4, HIGH);
   digitalWrite(driver2motor4in3, HIGH);
   digitalWrite(driver2motor4in4, LOW);
+}
+
+void strafeLeft() {
+  //strafeLeft REVERSE	FORWARD	FORWARD	REVERSE
+  digitalWrite(driver1motor1in1, LOW);
+  digitalWrite(driver1motor1in2, HIGH);
+  digitalWrite(driver2motor3in1, HIGH);
+  digitalWrite(driver2motor3in2, LOW);
+
+  digitalWrite(driver1motor2in3, HIGH);
+  digitalWrite(driver1motor2in4, LOW);
+  digitalWrite(driver2motor4in3, LOW);
+  digitalWrite(driver2motor4in4, HIGH);
 }
 
 void stopAllWheels() {
@@ -288,5 +370,93 @@ void speedControl() {
   digitalWrite(driver2motor4in3, LOW);
   digitalWrite(driver2motor4in4, LOW);
 }
+
+void showLcdMessage() {
+
+  // has one second passed?
+
+  // see here: https://www.instructables.com/Coding-Timers-and-Delays-in-Arduino/
+  //if ((millis() - nextDisplay) > 3000) return;
+  if (delayRunning && ((millis() - messageDelay) < DELAY_TIME)) return;
+
+  lcd.clear();
+
+  message = "D:"
+            + String(distanceFront, 0) + ","
+            + String(distanceBack, 0) + ","
+            + String(distanceLeft, 0) + ","
+            + String(distanceRight, 0);
+
+  lcd.setCursor(0, 0);
+  lcd.print(message);
+
+  //move the cursor to the first space of the bottom row
+  lcd.setCursor(14, 1);
+  lcd.print(millis() / 1000);
+
+  lcd.setCursor(0, 1);
+  String motorMessage = "M:" + String(runWheels) + ",S:" + String(speed);
+  lcd.print(motorMessage);
+
+  // set the next update for one second from now
+  //nextDisplay = millis() + 3000;
+  messageDelay += DELAY_TIME;
+
+  /*
+  /// CLEANUP - Unused
+
+    //set the cursor to the 0,0 position (top left corner)
+  lcd.setCursor(0, 0);
+  lcd.print("S:");
+  lcd.setCursor(2, 0);
+  lcd.print(speed);
+
+  lcd.setCursor(6, 1);
+  lcd.print(runWheels);
+  */
+}
+
+
+// FROM SIK Circuit 3B - https://learn.sparkfun.com/tutorials/sparkfun-inventors-kit-experiment-guide---v41/all#circuit-3b-distance-sensor
+//RETURNS THE DISTANCE MEASURED BY THE HC-SR04 DISTANCE SENSOR
+int getDistance(int side) {
+  float echoTime;          //variable to store the time it takes for a ping to bounce off an object
+  int calculatedDistance;  //variable to store the distance calculated from the echo time
+  int trigPin = 0;
+  int echoPin = 0;
+
+  if (side == FRONT) {
+    trigPin = trig1Pin;
+    echoPin = echo1Pin;
+  } else if (side == BACK) {
+    trigPin = trig2Pin;
+    echoPin = echo2Pin;
+  } else if (side == LEFT) {
+    trigPin = trig3Pin;
+    echoPin = echo3Pin;
+  } else if (side == RIGHT) {
+    trigPin = trig4Pin;
+    echoPin = echo4Pin;
+  }
+
+  if (trigPin == 0) return -1;  // shouldnt get here
+
+  //send out an ultrasonic pulse that's 10ms long
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  //use the pulsein command to see how long it takes for the
+  //pulse to bounce back to the sensor
+  echoTime = pulseIn(echoPin, HIGH);
+
+  //calculate the distance of the object that reflected the pulse
+  //(half the bounce time multiplied by the speed of sound)
+  calculatedDistance = round(echoTime / 148.0);
+
+  //send back the distance that was calculated
+  return calculatedDistance;
+}
+
 
 ////
