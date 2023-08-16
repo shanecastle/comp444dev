@@ -8,6 +8,8 @@
 //the liquid crystal library contains commands for printing to the display
 #include <LiquidCrystal.h>
 
+#include <Servo.h>
+
 
 
 //wiring:
@@ -46,8 +48,9 @@ int speed = 0;
 
 
 // setup start/stop buttons
-int redButtonPin = 65;
-int greenButtonPin = 64;
+int redButtonPin = 65;    // stop motors
+int greenButtonPin = 64;  // start motors
+int blueButtonPin = 57;   // start arm
 
 // ultrasonic distances
 float distanceFront = 0;
@@ -77,10 +80,30 @@ const int BACK = 2;
 const int LEFT = 3;
 const int RIGHT = 4;
 
-
 bool runWheels = false;
-
 String message = "";
+
+
+//create servo objects
+Servo servo1;
+Servo servo2;
+Servo servo3;
+Servo servo4;
+Servo servo5;
+Servo servo6;
+
+const int servo1Pin = 40;
+const int servo2Pin = 41;
+const int servo3Pin = 42;
+const int servo4Pin = 43;
+const int servo5Pin = 44;
+const int servo6Pin = 45;
+
+
+void waitForBlueButtonPress() {
+  while (digitalRead(blueButtonPin) == HIGH) {}
+}
+//-----------------------------------------------------------------------------
 
 void setup() {
   RPC.begin();
@@ -97,6 +120,7 @@ void setup() {
   // setup motor on/off buttons
   pinMode(redButtonPin, INPUT_PULLUP);
   pinMode(greenButtonPin, INPUT_PULLUP);
+  pinMode(blueButtonPin, INPUT_PULLUP);
 
   // setup distance sensors
   pinMode(trig1Pin, OUTPUT);
@@ -138,10 +162,14 @@ void setup() {
 
   // set encoder pins
   //  pinMode(M1_ENCODER_A, INPUT);
-  // pinMode(M1_ENCODER_B, INPUT);
-
+  //  pinMode(M1_ENCODER_B, INPUT);
   //  pinMode(M2_ENCODER_A, INPUT);
-  // pinMode(M2_ENCODER_B, INPUT);
+  //  pinMode(M2_ENCODER_B, INPUT);
+
+  showMessage("Press Blue");
+  while (digitalRead(blueButtonPin) == HIGH) {}
+
+  servoTest();
 }
 
 void loop() {
@@ -162,7 +190,7 @@ void loop() {
     runWheels = true;
   }
 
-  showLcdMessage();
+  showCurrentStatus();
 
   if (runWheels == false) return;
 
@@ -371,7 +399,13 @@ void speedControl() {
   digitalWrite(driver2motor4in4, LOW);
 }
 
-void showLcdMessage() {
+void showMessage(String message) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(message);
+}
+
+void showCurrentStatus() {
 
   // has one second passed?
 
@@ -458,5 +492,70 @@ int getDistance(int side) {
   return calculatedDistance;
 }
 
+void servoTest() {
+  showMessage("Servo5 15deg");
+  servo5.write(15);  // degs
+  servo5.attach(servo5Pin);
+  delay(500);
+
+  waitForBlueButtonPress();
+
+  showMessage("Servo4 90deg");
+  servo4.write(90);  // degs
+  servo4.attach(servo4Pin);
+  delay(500);
+
+  for (int i = 90; i >= 0; i -= 5) {
+    servo4.write(i);
+    delay(100);
+  }
+
+  waitForBlueButtonPress();
+
+  showMessage("Servo5 90deg");
+  for (int i = 15; i <= 90; i += 5) {
+    servo5.write(i);
+    delay(100);
+  }
+  waitForBlueButtonPress();
+
+  showMessage("Servo4 90deg");
+  for (int i = 0; i <= 90; i += 5) {
+    servo4.write(i);
+    delay(100);
+  }
+
+  showMessage("Press Servo3");
+  waitForBlueButtonPress();
+
+  servo3.write(0);           // degs
+  servo3.attach(servo3Pin);  // pin
+  delay(2000);
+
+  for (int i = 0; i <= 90; i += 5) {
+    servo3.write(i);
+    delay(100);
+  }
+
+  servo1.write(120);
+  servo1.attach(servo1Pin);
+
+  for (int i = 120; i <= 180; i += 5) {
+    servo1.write(i);
+    delay(100);
+  }
+
+
+  //------------------------------------------------------------------
+  Serial.println("Starting Shutdown routine.");
+  for (int i = 90; i >= 0; i -= 5) {
+    servo3.write(i);
+    delay(100);
+  }
+  for (int i = 90; i <= 180; i += 5) {
+    servo4.write(i);
+    delay(100);
+  }
+}
 
 ////
