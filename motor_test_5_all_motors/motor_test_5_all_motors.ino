@@ -2,15 +2,10 @@
 // Motor driver test
 // -----------------------------------------------------------
 
-// to boot the 2nd core
-#include <RPC.h>
-
-//the liquid crystal library contains commands for printing to the display
-#include <LiquidCrystal.h>
-
-#include <Servo.h>
-
-
+#include <RPC.h>            // to support 2nd CPU core
+#include <LiquidCrystal.h>  // LCD screen
+#include <Servo.h>          // servo library
+#include <FastLED.h>
 
 //wiring:
 //           (PWM)               Encoder
@@ -45,6 +40,12 @@ int speed = 0;
 
 #define M2_ENCODER_A 7  //  Motor 2 Encoder A
 #define M2_ENCODER_B 8  //  Motor 2 Encoder B
+
+// setup LED Lights
+#define NUM_LEDS 144
+#define DATA_PIN 6
+
+CRGB leds[NUM_LEDS];
 
 
 // setup start/stop buttons
@@ -99,10 +100,6 @@ const int servo4Pin = 43;
 const int servo5Pin = 44;
 const int servo6Pin = 45;
 
-
-void waitForBlueButtonPress() {
-  while (digitalRead(blueButtonPin) == HIGH) {}
-}
 //-----------------------------------------------------------------------------
 
 void setup() {
@@ -113,6 +110,9 @@ void setup() {
   lcd.clear();
   messageDelay = millis();
   delayRunning = true;
+
+  // init LED lights
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 
   // Serial.begin(9600);
   // Serial.write("Staring motor test");
@@ -175,7 +175,8 @@ void setup() {
 void loop() {
 
   potentiometer = analogRead(A0);
-  speed = round(potentiometer / 4);  // potentiometer returns 0 to 1023
+  //speed = round(potentiometer / 4);  // potentiometer returns 0 to 1023
+  speed = map(potentiometer, 0, 1023, 0, 255);
 
   distanceFront = getDistance(FRONT);
   distanceBack = getDistance(BACK);
@@ -450,10 +451,13 @@ void showCurrentStatus() {
   */
 }
 
+void waitForBlueButtonPress() {
+  while (digitalRead(blueButtonPin) == HIGH) {}
+}
 
-// FROM SIK Circuit 3B - https://learn.sparkfun.com/tutorials/sparkfun-inventors-kit-experiment-guide---v41/all#circuit-3b-distance-sensor
 //RETURNS THE DISTANCE MEASURED BY THE HC-SR04 DISTANCE SENSOR
 int getDistance(int side) {
+  // FROM SIK Circuit 3B - https://learn.sparkfun.com/tutorials/sparkfun-inventors-kit-experiment-guide---v41/all#circuit-3b-distance-sensor
   float echoTime;          //variable to store the time it takes for a ping to bounce off an object
   int calculatedDistance;  //variable to store the distance calculated from the echo time
   int trigPin = 0;
@@ -556,6 +560,96 @@ void servoTest() {
     servo4.write(i);
     delay(100);
   }
+}
+
+
+//-----------------------------------------------------------------------------
+// LED LIGHTS
+
+void blackAllLeds() {
+  for (int dot = 0; dot < NUM_LEDS; dot++) {
+    leds[dot] = CRGB::Black;
+  }
+  FastLED.show();
+}
+
+void showAllLeds() {
+  for (int dot = 0; dot < NUM_LEDS; dot++) {
+    leds[dot] = CRGB::Blue;
+  }
+  FastLED.show();
+}
+
+void showSingleLED(int ledId) {
+  leds[ledId] = CRGB::Red;
+  FastLED.show();
+  delay(2000);
+}
+
+void initBlack() {
+  // Set the first led back to black for 1 second
+  leds[0] = CRGB::Black;
+  FastLED.show();
+  delay(1000);
+}
+
+void initBlack2() {
+  // Set the first led back to black for 1 second
+  leds[0] = CRGB::Black;
+  leds[5] = CRGB::Black;
+
+  FastLED.show();
+  delay(1000);
+}
+
+void runXylon() {
+  for (int dot = 0; dot < NUM_LEDS; dot++) {
+    leds[dot] = CRGB::Blue;
+    FastLED.show();
+    // clear this led for the next time around the loop
+    leds[dot] = CRGB::Black;
+    delay(30);
+  }
+
+  for (int dot = NUM_LEDS; dot >= 0; dot--) {
+    leds[dot] = CRGB::Blue;
+    FastLED.show();
+    // clear this led for the next time around the loop
+    leds[dot] = CRGB::Black;
+    delay(30);
+  }
+}
+
+void runXylon2() {
+  Serial.println("--------------------------------------------");
+  Serial.println("Xylon2 starting");
+
+  for (int dot = 0; dot < NUM_LEDS; dot++) {
+    leds[dot - 1] = CRGB::Red;
+    leds[dot] = CRGB::Blue;
+    leds[dot + 5] = CRGB::Green;
+    FastLED.show();
+    // clear this led for the next time around the loop
+    leds[dot - 1] = CRGB::Black;
+    leds[dot] = CRGB::Black;
+    leds[dot + 5] = CRGB::Black;
+
+    delay(30);
+  }
+
+  for (int dot = NUM_LEDS; dot >= 6; dot--) {
+
+    leds[dot - 5] = CRGB::Green;
+    leds[dot] = CRGB::Blue;
+    leds[dot + 1] = CRGB::Red;
+    FastLED.show();
+    // clear this led for the next time around the loop
+    leds[dot - 5] = CRGB::Black;
+    leds[dot] = CRGB::Black;
+    leds[dot + 1] = CRGB::Black;
+    delay(30);
+  }
+  Serial.println("Xylon2 done");
 }
 
 ////

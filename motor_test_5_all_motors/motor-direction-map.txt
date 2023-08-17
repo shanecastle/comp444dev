@@ -1,0 +1,79 @@
+void moveForward() {
+  LeftFrontWheel.setSpeed(wheelSpeed);
+  LeftBackWheel.setSpeed(wheelSpeed);
+  RightFrontWheel.setSpeed(wheelSpeed);
+  RightBackWheel.setSpeed(wheelSpeed);
+}
+void moveBackward() {
+  LeftFrontWheel.setSpeed(-wheelSpeed);
+  LeftBackWheel.setSpeed(-wheelSpeed);
+  RightFrontWheel.setSpeed(-wheelSpeed);
+  RightBackWheel.setSpeed(-wheelSpeed);
+}
+void moveSidewaysRight() {
+  LeftFrontWheel.setSpeed(wheelSpeed);
+  LeftBackWheel.setSpeed(-wheelSpeed);
+  RightFrontWheel.setSpeed(-wheelSpeed);
+  RightBackWheel.setSpeed(wheelSpeed);
+}
+void moveSidewaysLeft() {
+  LeftFrontWheel.setSpeed(-wheelSpeed);
+  LeftBackWheel.setSpeed(wheelSpeed);
+  RightFrontWheel.setSpeed(wheelSpeed);
+  RightBackWheel.setSpeed(-wheelSpeed);
+}
+void rotateLeft() {
+  LeftFrontWheel.setSpeed(-wheelSpeed);
+  LeftBackWheel.setSpeed(-wheelSpeed);
+  RightFrontWheel.setSpeed(wheelSpeed);
+  RightBackWheel.setSpeed(wheelSpeed);
+}
+void rotateRight() {
+  LeftFrontWheel.setSpeed(wheelSpeed);
+  LeftBackWheel.setSpeed(wheelSpeed);
+  RightFrontWheel.setSpeed(-wheelSpeed);
+  RightBackWheel.setSpeed(-wheelSpeed);
+}
+void moveRightForward() {
+  LeftFrontWheel.setSpeed(wheelSpeed);
+  LeftBackWheel.setSpeed(0);
+  RightFrontWheel.setSpeed(0);
+  RightBackWheel.setSpeed(wheelSpeed);
+}
+void moveRightBackward() {
+  LeftFrontWheel.setSpeed(0);
+  LeftBackWheel.setSpeed(-wheelSpeed);
+  RightFrontWheel.setSpeed(-wheelSpeed);
+  RightBackWheel.setSpeed(0);
+}
+void moveLeftForward() {
+  LeftFrontWheel.setSpeed(0);
+  LeftBackWheel.setSpeed(wheelSpeed);
+  RightFrontWheel.setSpeed(wheelSpeed);
+  RightBackWheel.setSpeed(0);
+}
+void moveLeftBackward() {
+  LeftFrontWheel.setSpeed(-wheelSpeed);
+  LeftBackWheel.setSpeed(0);
+  RightFrontWheel.setSpeed(0);
+  RightBackWheel.setSpeed(-wheelSpeed);
+}
+void stopMoving() {
+  LeftFrontWheel.setSpeed(0);
+  LeftBackWheel.setSpeed(0);
+  RightFrontWheel.setSpeed(0);
+  RightBackWheel.setSpeed(0);
+}
+
+
+direction
+forward
+backward
+strafeRight
+strafeLeft
+rotateRight
+rotateLeft
+rightForward
+rightBackward
+leftForward
+leftBackward
