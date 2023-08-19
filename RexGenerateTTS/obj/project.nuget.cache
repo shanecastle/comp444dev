@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "+z3QRfc0gcPqHf9ax/UzVV3bb1RVdJ70sD41FdhSf58LC2Y5wF0oX8hG1EhtLAUFwmciAx3q044VxAzeSitDcw==",
+  "success": true,
+  "projectFilePath": "C:\\repos\\comp444dev\\RexGenerateTTS\\RexTTS.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Shane\\.nuget\\packages\\system.speech\\7.0.0\\system.speech.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
