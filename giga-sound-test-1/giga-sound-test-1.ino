@@ -20,7 +20,7 @@ void loop() {
     // Get a free buffer for writing
     SampleBuffer buf = dac1.dequeue();
 
-    // Write data to buffer
+    // Write data to buffer (this is really loud and screachy, careful about your ears.)
     for (int i = 0; i < buf.size(); i++) {
       buf.data()[i] = (i % 2 == 0) ? 0 : 0xfff;
     }

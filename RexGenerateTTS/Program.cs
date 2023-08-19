@@ -2,34 +2,27 @@
 using System.Speech.AudioFormat;
 using System.Speech.Synthesis;
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine("R.E.X. Speech Generator");
 
-//var info = new SpeechAudioFormatInfo(6, AudioBitsPerSample.Sixteen, AudioChannel.Stereo);
+var format = new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono);
+var speech = new SpeechSynthesizer();
+speech.SelectVoiceByHints(VoiceGender.Male);
 
-//var format = new SpeechAudioFormatInfo(EncodingFormat.Pcm, 44100, 16, 2, 16000, 2, null);
-var format = new SpeechAudioFormatInfo(44100, AudioBitsPerSample.Sixteen,AudioChannel.Mono);
+SpeakToFile("intro.wav", "Hello, I am REX, the robotic experimental explorer. I am autonomous, I can move on my own, sense my environment, and use my robotic arm");
+SpeakToFile("greenblock.wav", "Green Block Detected");
+SpeakToFile("redblock.wav", "Red Block Detected");
+SpeakToFile("blueblock.wav", "Blue Block Detected");
+SpeakToFile("startmotortest.wav", "Starting Motor Test");
+SpeakToFile("endmotortest.wav", "Motor Test Complete");
+SpeakToFile("moveleft.wav", "Moving left");
+SpeakToFile("moveright.wav", "Moving right");
+SpeakToFile("moveforward.wav", "Moving forward");
+SpeakToFile("movereverse.wav", "Moving in reverse");
+SpeakToFile("point.wav", "point");
 
-var ss = new SpeechSynthesizer();
-
-//ss.Volume = 100;
-ss.SelectVoiceByHints(VoiceGender.Male);
-ss.SetOutputToWaveFile(@"C:\REX\intro5.wav", format);
-ss.Speak("Hello, I am REX, the robotic experimental explorer. I am autonomous, I can move on my own, sense my environment, and use my robotic arm");
-ss.SetOutputToWaveFile(@"c:\rex\greenblock.wav");
-ss.Speak("Green Block Detected");
-
-ss.SetOutputToWaveFile(@"c:\rex\redblock.wav", format);
-ss.Speak("Red Block Detected");
-
-ss.SetOutputToWaveFile(@"c:\rex\blueblock.wav", format);
-ss.Speak("Blue Block Detected");
-
-ss.SetOutputToWaveFile(@"c:\rex\point.wav", format);
-ss.Speak("point");
-
-
-for (var i = 0; i <= 1000; i++)
+void SpeakToFile(string filename,string text)
 {
-    ss.SetOutputToWaveFile($"c:\\rex\\numbers\\{i}.wav", format);
-    ss.Speak($"{i}");
+    var outFile = @"c:\rex\" + filename;
+    speech.SetOutputToWaveFile(outFile, format);
+    speech.Speak(text);
 }

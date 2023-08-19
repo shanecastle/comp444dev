@@ -16,9 +16,15 @@ bool debugMode = true;
 void setup() {
   //RPC.begin();  //boot the M4 coprocessor
   Serial.begin(9600);
+  delay(3000);
+  log("------------------------------------------------");
+  log("[SETUP] - STARTING SETUP -");
+
+  log("[SETUP] Setting up USB");
+  setupUsb();
 
   // initialize the LCD display (in REX_Display.ino)
-  log("Setting up display");
+  log("[SETUP] Setting up display");
   setupDisplay();
 
   // initialize the DAC (in REX_Sound.ino)
@@ -26,7 +32,12 @@ void setup() {
   //setupSound();
 
   // initialize the motors (in REX_Movement.ino)
+  log("[SETUP] Setting up movement");
   setupMovement();
+
+  log("[SETUP] - SETUP COMPLETE -");
+  playSoundFile("WARP.wav");
+
 }
 
 void loop() {
@@ -35,6 +46,8 @@ void loop() {
 
   // play the champion song (in REX_Sound.ino)
   //playChampion();
+
+  checkMotorButtons();
 
   motorTest();
 }

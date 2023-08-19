@@ -21,7 +21,7 @@ void setupDisplay() {
 }
 
 void showMessage(String message) {
-  showMessage(0, 0, false, message);
+  showMessage(0, 0, message);
 }
 
 // display a message on the 16x2 LCD screen
@@ -31,14 +31,8 @@ void showMessage(String message) {
 //     0,1 = bottom left of second row
 //    15,1 = bottom right of second row
 void showMessage(int column, int row, String message) {
-  showMessage(column, row, false, message);
-}
-
-void showMessage(int column, int row, bool autoScroll, String message) {
   lcd.setCursor(column, row);
   lcd.print(message);
-
-  // TODO: enable .autoscroll();
 }
 
 void clearDisplay() {
