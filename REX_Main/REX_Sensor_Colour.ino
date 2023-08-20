@@ -1,6 +1,5 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
-#include <RPC.h>  // to support 2nd CPU core
 #include <LiquidCrystal.h>
 
 /* Adafruit TCS34725 */
@@ -13,12 +12,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS347
 LiquidCrystal lcd(59, 61, 63, 58, 60, 62);
 
 
-void setup(void) {
-  RPC.begin();
-
-  Serial.begin(9600);
-  delay(1000);
-
+void setupColourSensor() {
   if (tcs.begin()) {
     Serial.println("Found sensor");
   } else {
@@ -27,9 +21,7 @@ void setup(void) {
   }
 }
 
-void loop(void) {
-  // Serial.println("in loop");
-
+void detectColour() {
   uint16_t r, g, b, c, colorTemp, lux;
   float r2, g2, b2;
 
@@ -63,8 +55,4 @@ void loop(void) {
     if (g2 > r2 && g2 > b2) Serial.print("  GREEN detected");
     if (b2 > r2 && b2 > g2) Serial.print("  BLUE detected");
   }
-
-  Serial.println(" ");
-
-  delay(2000);
 }

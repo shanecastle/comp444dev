@@ -1,8 +1,10 @@
 #include <Arduino_USBHostMbed5.h>
-
 #include <PluggableUSBMSD.h>
-
-#include <RPC.h> // to boot the 2nd core
+#include <RPC.h>  // to boot the 2nd core
+#include <Arduino_AdvancedAnalog.h>
+#include <DigitalOut.h>
+#include <FATFileSystem.h>
+//#include <USBHostMbed5.h>
 
 /*
  * GIGA R1 - Audio Playback
@@ -10,11 +12,6 @@
  * In order for this sketch to work you need to rename 'USB_DRIVE' to the name of your USB stick drive.
  * Furthermore you need to store the provided audio file AUDIO_SAMPLE.wav on it.
 */
-
-#include <Arduino_AdvancedAnalog.h>
-#include <DigitalOut.h>
-//#include <USBHostMbed5.h>
-#include <FATFileSystem.h>
 
 AdvancedDAC dac1(A12);
 
@@ -28,7 +25,7 @@ int samples_count = 0;
 
 void setup() {
   Serial.begin(9600);
-     RPC.begin();
+  RPC.begin();
 
   /* Enable power for HOST USB connector. */
   pinMode(PA_15, OUTPUT);

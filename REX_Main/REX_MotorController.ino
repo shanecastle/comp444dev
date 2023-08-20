@@ -1,4 +1,4 @@
-// REX_Movement.ino
+// REX_MotorController.ino
 // Arduino Giga R1 code to control DC motors on R.E.X. Model 1
 // COMP444 - Shane Castle #2621506 - August, 2023
 
@@ -124,7 +124,6 @@ void motorTest() {
   //testMotor(REAR_LEFT);
   //testMotor(REAR_RIGHT);
 
-  //                "0123456789012345"
   showMessage(0, 2, "Move FORWARD    ");
   playSoundFile("moveforward.wav");
   moveForward();
@@ -132,8 +131,6 @@ void motorTest() {
   stopAllMotors();
   delay(1000);
 
-
-  //                "0123456789012345"
   showMessage(0, 2, "Move REVERSE    ");
   playSoundFile("movereverse.wav");
   moveReverse();
@@ -141,7 +138,6 @@ void motorTest() {
   stopAllMotors();
   delay(1000);
 
-  //                "0123456789012345"
   showMessage(0, 2, "Move ROTATE LEFT");
   playSoundFile("moveleft.wav");
   rotateLeft();
@@ -149,14 +145,6 @@ void motorTest() {
   stopAllMotors();
   delay(1000);
 
-  //                "0123456789012345"
-  /*showMessage(0, 2, "Move STRAFE LEFT");
-  strafeLeft();
-  delay(1000);
-  stopAllMotors();
-  delay(1000);
-*/
-  //                "0123456789012345"
   playSoundFile("endmotortest.wav");
   showMessage(0, 2, " Test Complete  ");
   playSoundFile("SHAKE.wav");
@@ -165,7 +153,6 @@ void motorTest() {
 
 void testMotor(int motorId) {
   logDebug("[MOVE] Testing motor " + String(motorId));
-  //                "0123456789012345"
   showMessage(0, 2, "Testing motor " + String(motorId));
   setMotor(motorId, FORWARD);
   delay(1500);

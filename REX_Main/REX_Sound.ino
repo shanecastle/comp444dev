@@ -2,6 +2,8 @@
 // Arduino Giga R1 code to play music and voice files on R.E.X. Model 1
 // COMP444 - Shane Castle #2621506 - August, 2023
 
+// based on Arduino.cc sample code
+
 #include <Arduino_AdvancedAnalog.h>
 #include <DigitalOut.h>
 #include <FATFileSystem.h>
