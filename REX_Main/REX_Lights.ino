@@ -2,7 +2,7 @@
 // Note: Uses Arduino Giga specific build for NeoPixel library
 
 #include <Adafruit_NeoPixel.h>
-#define PIN 49
+#define PIN 39
 #define NUMPIXELS 144
 
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);

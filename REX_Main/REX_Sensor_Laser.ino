@@ -1,7 +1,7 @@
 // REX_Laser.ino
 
-#define laserPin 8
-#define sensorPin 8
+#define laserPin 48
+#define sensorPin 49
 
 void setupLaser() {
   pinMode(laserPin, OUTPUT);
