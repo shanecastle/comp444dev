@@ -17,6 +17,11 @@ float distanceLeft = 0;
 float distanceRight = 0;
 float distanceBack = 0;
 
+const int FRONT = 1;
+const int BACK = 2;
+const int LEFT = 3;
+const int RIGHT = 4;
+
 void setupUltrasonic() {
   // setup distance sensors
   pinMode(trig1Pin, OUTPUT);
@@ -37,11 +42,13 @@ void getDistance() {
 }
 
 void showDistance() {
-  message = "D:"
-            + String(distanceFront, 0) + ","
-            + String(distanceBack, 0) + ","
-            + String(distanceLeft, 0) + ","
-            + String(distanceRight, 0);
+  String message = "D:"
+                   + String(distanceFront, 0) + ","
+                   + String(distanceBack, 0) + ","
+                   + String(distanceLeft, 0) + ","
+                   + String(distanceRight, 0);
+
+  logDebug(message);
 }
 
 //RETURNS THE DISTANCE MEASURED BY THE HC-SR04 DISTANCE SENSOR

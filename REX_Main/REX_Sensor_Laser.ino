@@ -8,24 +8,21 @@ void setupLaser() {
   pinMode(sensorPin, INPUT);}
 
 void turnOnLaser() {
-  digitalWrite(LaserPin, HIGH);
+  digitalWrite(laserPin, HIGH);
 }
 
 void turnOffLaser() {
-  digitalWrite(LaserPin, LOW);
+  digitalWrite(laserPin, LOW);
 }
 
 void detectBeam() {
   bool value = digitalRead(sensorPin);
-  Serial.print("sensor: ");
-  Serial.println(value);
+  logDebug("[LASER] sensor: " + String(value));
 
   if (value == 0) {
-    digitalWrite(LED, HIGH);
-    Serial.println("Tripped!");
+    logDebug("[LASER] Tripped!");
 
   } else {
-    digitalWrite(LED, LOW);
-    Serial.println("Beam not blocked");
+    logDebug("[LASER] Beam not blocked");
   }
 }

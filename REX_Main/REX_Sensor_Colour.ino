@@ -9,7 +9,6 @@
    Connect GROUND to common ground */
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
-LiquidCrystal lcd(59, 61, 63, 58, 60, 62);
 
 
 void setupColourSensor() {
