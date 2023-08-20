@@ -45,14 +45,14 @@ void loop() {
   //logDebug("Showing test message");
   showMessage("test1 " + String(millis()));
 
-  showDistance();
+  //showDistance();
   getDistance();
-  showDistance();
+  //showDistance();
 
   //detectColour();
 
   // arm test
-  //testRobotArm();
+  testRobotArm();
 
   //detectBeam();
 
