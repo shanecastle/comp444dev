@@ -9,7 +9,7 @@ Servo servo4;
 Servo servo5;
 Servo servo6;
 
-int buttonPin = 57;
+int blueButtonPin = 57;
 
 const int servo1Pin = 40;
 const int servo2Pin = 41;
@@ -18,17 +18,19 @@ const int servo4Pin = 43;
 const int servo5Pin = 44;
 const int servo6Pin = 45;
 
+void setupArmController() {
+  pinMode(blueButtonPin, INPUT_PULLUP);
+}
+
 void testRobotArm() {
+  log("[ARM] Servo test. Press Blue");
+  showMessage(0,1, "Press Blue");
 
-  Serial.println("Servo test. Press Blue");
+  // wait until the blue button is pressed
+  while (digitalRead(blueButtonPin) == HIGH) {
+  }
 
-  pinMode(buttonPin, INPUT_PULLUP);
-
-  // wait until the button is pressed
-  // while (digitalRead(buttonPin) == HIGH) {
-  //}
-
-  Serial.println("Servo 5 to 1500us");
+  logDebug("[ARM] Servo 5 to 1500us");
   //servo5.write(15);  // degs
   servo5.attach(servo5Pin);
   //servo5.write(15);  // degs
@@ -45,7 +47,7 @@ void testRobotArm() {
   // while (digitalRead(buttonPin) == HIGH) {
   //}
 
-  Serial.println("Servo 4 to 90 deg");
+  logDebug("[ARM] Servo 4 to 90 deg");
   //servo4.write(90);  // degs
   servo4.attach(servo4Pin);
   //servo4.write(90);

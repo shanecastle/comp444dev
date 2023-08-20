@@ -1,6 +1,6 @@
 //REX_Lights.ino - LED lightstrip for REX
 // Note: Uses Arduino Giga specific build for NeoPixel library
-
+/*
 #include <Adafruit_NeoPixel.h>
 #define PIN 39
 #define NUMPIXELS 143 // had to cut one pixel
@@ -26,7 +26,7 @@ void loopColor(int r, int g, int b) {
     delay(DELAYVAL);
   }
 }
-
+*/
 
 /*
 void blackAllLeds() {

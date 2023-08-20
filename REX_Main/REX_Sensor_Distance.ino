@@ -22,7 +22,7 @@ const int BACK = 2;
 const int LEFT = 3;
 const int RIGHT = 4;
 
-void setupUltrasonic() {
+void setupDistance() {
   // setup distance sensors
   pinMode(trig1Pin, OUTPUT);
   pinMode(echo1Pin, INPUT);
@@ -48,7 +48,8 @@ void showDistance() {
                    + String(distanceLeft, 0) + ","
                    + String(distanceRight, 0);
 
-  logDebug(message);
+  logDebug("[DISTANCE] " + message);
+  showMessage(0, 1, message);
 }
 
 //RETURNS THE DISTANCE MEASURED BY THE HC-SR04 DISTANCE SENSOR

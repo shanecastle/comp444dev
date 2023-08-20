@@ -18,13 +18,24 @@ void setup() {
   log("[SETUP] Setting up display");
   setupDisplay();
 
-
   log("[SETUP] Setting up USB");
   setupUsb();
 
   // initialize the motors (in REX_Movement.ino)
   log("[SETUP] Setting up movement");
   setupMovement();
+
+  log("[SETUP] Setting up laser");
+  setupLaser();
+
+  log("[SETUP] Setting up colour sensor");
+  setupColourSensor();
+
+  log("[SETUP] Setting up Arm Controller");
+  setupArmController();
+
+  log("[SETUP] Setup Distance detectors");
+  setupDistance();
 
   log("[SETUP] - SETUP COMPLETE -");
   playSoundFile("WARP.wav");
@@ -34,9 +45,19 @@ void loop() {
   //logDebug("Showing test message");
   showMessage("test1 " + String(millis()));
 
-  checkMotorButtons();
+  showDistance();
+  getDistance();
+  showDistance();
 
-  motorTest();
+  //detectColour();
+
+  // arm test
+  //testRobotArm();
+
+  //detectBeam();
+
+  //checkMotorButtons();
+  //motorTest();
 }
 
 void log(String message) {
