@@ -97,8 +97,8 @@ void findDataChunk() {
 }
 
 void writeDataToBuffer() {
-  logDebug("DAC1 available: " + String(dac1.available()));
-  logDebug("File eof:" + String(feof(file)));
+  logDebug("[SOUND] DAC1 available: " + String(dac1.available()));
+  logDebug("[SOUND] File eof:" + String(feof(file)));
 
   if (dac1.available() && !feof(file)) {
     logDebug("[SOUND] Playing sound file");

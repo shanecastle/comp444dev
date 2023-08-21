@@ -9,15 +9,13 @@
    Connect GROUND to common ground */
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
-LiquidCrystal lcd(59, 61, 63, 58, 60, 62);
 
 
 void setupColourSensor() {
   if (tcs.begin()) {
-    Serial.println("Found sensor");
+    log("[COLOUR] Found sensor");
   } else {
-    Serial.println("No TCS34725 found ... check your connections");
-    // while (1);
+    log("[COLOUR] ERROR - No TCS34725 found");
   }
 }
 
@@ -39,20 +37,31 @@ void detectColour() {
   //Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
   //Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
 
-  Serial.print("R/G/B (2): ");
-  Serial.print(round(r2), DEC);
-  Serial.print("/");
-  Serial.print(round(g2), DEC);
-  Serial.print("/");
-  Serial.print(round(b2), DEC);
-  Serial.print(" Lux:");
-  Serial.print(lux);
+  Serial.println("R/G/B (2): "
+                 + String(round(r2))
+                 + "/" + String(round(g2))
+                 + "/" + String(round(b2))
+                 + " Lux:" + String(lux));
 
   if (lux > 1000) {
-    Serial.print(" No block detected");
+    logDebug("[COLOUR] No block detected");
+    showMessage(0, 1, "  No Block   ");
   } else {
-    if (r2 > g2 && r2 > b2) Serial.print("  RED detected");
-    if (g2 > r2 && g2 > b2) Serial.print("  GREEN detected");
-    if (b2 > r2 && b2 > g2) Serial.print("  BLUE detected");
+    if (r2 > g2 && r2 > b2) {
+      logDebug("[COLOUR] RED detected");
+      showMessage(0, 1, "RED Block");
+      playSoundFile("redblock.wav");
+    }
+
+    if (g2 > r2 && g2 > b2) {
+      logDebug("[COLOUR] GREEN detected");
+      showMessage(0, 1, "GREEN Block");
+      playSoundFile("greenblock.wav");
+    }
+    if (b2 > r2 && b2 > g2) {
+      logDebug("[COLOUR] BLUE detected");
+      showMessage(0, 1, "BLUE Block");
+      playSoundFile("blueblock.wav");
+    }
   }
 }
