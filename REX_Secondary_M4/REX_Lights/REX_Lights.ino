@@ -1,24 +1,47 @@
 //REX_Lights.ino - LED lightstrip for REX
 // Note: Uses Arduino Giga specific build for NeoPixel library
 
-//#include <Adafruit_NeoPixel.h>
-//#define PIN 39
-//#define NUMPIXELS 143 // had to cut one pixel
+#include "RPC.h"
+#include "Adafruit_NeoPixel.h"
+#define PIN 39
+#define NUMPIXELS 143 // had to cut one pixel
 
-//Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-//#define DELAYVAL 30
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+#define DELAYVAL 100
 
-void setupLights(){
-  log("[LIGHTS] Lights are deployed to the M4 core");
+void setup(){
+  RPC.begin();
+  delay(500);
+  RPC.bind("showLightsM4", showLightsM4);
+  RPC.bind("loopColourM4", loopColourM4);
+
+  pixels.begin();
+  pixels.clear();
+  loopColourM4(50, 0, 0);
+  loopColourM4(0, 50, 0);
+  loopColourM4(0, 0, 50);
+
+  RPC.println("M4 boot complete");
 }
 
-void showLights() {
-  logDebug("[LIGHTS] calling RPC function 'showLightsM4'");
-  RPC.call("showLightsM4");
+void loop(){ 
+  delay(100);
 }
 
-void loopColor(int r, int g, int b) {
-  RPC.call("loopColourM4", r, g, b);
+void showLightsM4() {
+  //pixels.clear();
+ // loopColourM4(150, 0, 0);
+ // loopColourM4(0, 150, 0);
+  //loopColourM4(0, 0, 150);
+}
+
+void loopColourM4(int r, int g, int b) {
+  RPC.println("Starting colour loop");
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, pixels.Color(r, g, b));
+    pixels.show();
+    delay(DELAYVAL);
+  }
 }
 
 

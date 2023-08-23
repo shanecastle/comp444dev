@@ -37,6 +37,8 @@ void testRobotArm() {
   while (digitalRead(blueButtonPin) == HIGH) {
   }
 
+  loopColour(0,0,150);
+
   //playSoundFile("activatearm.wav");
 
   //servo3test();
@@ -67,59 +69,57 @@ void servo2test() {
 void pickupBlock() {
 
   //playSoundFile("activatearm.wav");
-  moveServo(5, 1500, false, 100);
+  moveServo(5, 1500, true, 100);
   moveServo(4, 1100, true, 100);
-  //moveServo(5, 1400, false, 100);
-  //moveServo(5, 1300, false, 100);
-  //moveServo(5, 1200, true, 100);
-  //moveServo(5, 900, true, 500);
-  //moveServo(4, 700, true, 500);
-  //moveServo(4, 1100, true, 100);
-
-  //moveServo(3, 1500, true, 500);
-  // moveServo(3, 2300, true, 500);
-  moveServo(6, 2100, true, 100);
-  //moveServo(2, 700, true, 500);
-  // moveServo(2, 1000, true, 500);
-  moveServo(2, 2100, true, 100);
-  //moveServo(5, 100, true, 100);
-  //moveServo(3, 2300, true, 100);
-
-  //moveServo(3, 2400, true, 100);
-  moveServo(3, 2200, true, 100);
   moveServo(1, 1200, true, 100);  // open
+  moveServo(5, 1200, true, 100);
+  moveServo(6, 2100, true, 100);
+  moveServo(2, 2100, true, 100);
+  moveServo(3, 2100, true, 100);
+  //moveServo(5, 1400, true, 100);
+
+  playSoundFile("servo4.wav");
+  playSoundFile("moving.wav");
+  playSoundFile("/numbers/600.wav");
+  for (int i = 1100; i > 600; i -= 10) {
+    moveServo(4, i, false, 50);
+  }
+
+  /*
+  playSoundFile("servo3.wav");
+  playSoundFile("moving.wav");
+  playSoundFile("/numbers/600.wav");
+  for (int i = 2100; i > 1900; i -= 10) {
+    moveServo(3, i, false, 50);
+  }
+*/
+
+  /*
+  playSoundFile("servo4.wav");
+  playSoundFile("moving.wav");
+  playSoundFile("/numbers/600.wav");
+  for (int i = 800; i > 600; i -= 10) {
+    moveServo(4, i, false, 50);
+  }
+*/
+
+  //moveServo(1, 2500, true, 500);  // closed
+
+  // close gripper
+  playSoundFile("servo1.wav");
+  playSoundFile("moving.wav");
+  playSoundFile("/numbers/2500.wav");
+  for (int i = 1200; i < 2500; i += 10) {
+    moveServo(1, i, false, 100);
+  }
 
 
   playSoundFile("servo4.wav");
   playSoundFile("moving.wav");
-  playSoundFile("/numbers/700.wav");
-  for (int i = 1100; i > 700; i-= 10) {
+  playSoundFile("/numbers/2500.wav");
+  for (int i = 500; i < 1500; i += 10) {
     moveServo(4, i, false, 50);
   }
-  // moveServo(4, 900, false, 500);
-  // moveServo(4, 800, false, 500);
-  // moveServo(4, 700, false, 500);
-
-  //moveServo(5, 1300, true, 100);
-  //moveServo(5, 1200, true, 100);
-  //moveServo(3, 2100, true, 100);
-
-  //moveServo(4, 600, true, 100);
-  //moveServo(3, 2100, true, 100);
-
-  //servo2test();
-
-
-  //  moveServo(5, 1550, true, 100);
-  //  moveServo(5, 1600, true, 100);
-  //  moveServo(5, 1650, true, 100);
-
-  moveServo(1, 2500, true, 500);  // closed
-
-
-  //  delay(2000);
-
-  //servo3test();
 }
 
 void moveToRestPosition() {
@@ -167,6 +167,41 @@ void fullRangeTest() {
 
 void moveServo(int id, int microseconds) {
   moveServo(id, microseconds, true, 500);
+}
+
+void moveServo2(int id, int microseconds, bool announce, int delayMilliseconds) {
+  logDebug("[ARM] Servo " + String(id) + " to " + String(microseconds) + "us");
+
+  if (announce) {
+    String servoFile = "servo" + String(id) + ".wav";
+    playSoundFile(servoFile.c_str());
+    playSoundFile("moving.wav");
+    String numberFile = "/numbers/" + String(microseconds) + ".wav";
+    playSoundFile(numberFile.c_str());
+  }
+
+  switch (id) {
+    case 1:
+      servo1.writeMicroseconds(microseconds);
+      break;
+    case 2:
+      servo2.writeMicroseconds(microseconds);
+      break;
+    case 3:
+      servo3.writeMicroseconds(microseconds);
+      break;
+    case 4:
+      servo4.writeMicroseconds(microseconds);
+      break;
+    case 5:
+      servo5.writeMicroseconds(microseconds);
+      break;
+    case 6:
+      servo6.writeMicroseconds(microseconds);
+      break;
+  }
+
+  delay(delayMilliseconds);
 }
 
 //move a servo to a position (microsecond range: 1000 to 2000. 1500 is midpoint)

@@ -1,6 +1,6 @@
-#include <Wire.h>
+#include "Wire.h"
 #include "Adafruit_TCS34725.h"
-#include <LiquidCrystal.h>
+#include "LiquidCrystal.h"
 
 /* Adafruit TCS34725 */
 /* Connect SCL    to analog 5 on UNO (SCL on Giga)

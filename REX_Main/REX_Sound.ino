@@ -4,9 +4,9 @@
 
 // based on Arduino.cc sample code
 
-#include <Arduino_AdvancedAnalog.h>
-#include <DigitalOut.h>
-#include <FATFileSystem.h>
+#include "Arduino_AdvancedAnalog.h"
+#include "DigitalOut.h"
+#include "FATFileSystem.h"
 
 AdvancedDAC dac1(A12);
 int sample_size = 0;
@@ -40,7 +40,7 @@ char fullFilename[255] = { 0 };
 
 // play 16-bit PCM Mono 16kHz realigned files
 void playSoundFile(const char *filename) {
-  logDebug("[SOUND] Starting sound");
+  //logDebug("[SOUND] Starting sound");
 
   // 16-bit PCM Mono 16kHz realigned noise reduction
   snprintf(fullFilename, sizeof(fullFilename), "/USB_DRIVE/%s", filename);
@@ -52,14 +52,14 @@ void playSoundFile(const char *filename) {
     return;
   }
 
-  logDebug("[SOUND] Reading audio header ...");
+  //logDebug("[SOUND] Reading audio header ...");
   fread(&header, sizeof(header), 1, file);
 
   //showHeaderInfo();
   findDataChunk();
 
   // Configure the advanced DAC.
-  logDebug("[SOUND] Setting up DAC1");
+  //logDebug("[SOUND] Setting up DAC1");
   dac1.stop();
   if (!dac1.begin(AN_RESOLUTION_12, header.sampleRate, 256, 16)) {
     logDebug("[SOUND] Failed to start DAC1 !");
@@ -68,7 +68,7 @@ void playSoundFile(const char *filename) {
 
   writeDataToBuffer();
 
-  logDebug("[SOUND] Done playing file. Closing file");
+  logDebug("[SOUND] Done playing file");
   if (feof(file)) {
     fclose(file);
   }
@@ -90,34 +90,34 @@ void findDataChunk() {
   // Determine number of samples.
   sample_size = header.bitsPerSample / 8;
   samples_count = chunk.size * 8 / header.bitsPerSample;
-  snprintf(msg, sizeof(msg), "[SOUND] Sample size = %i", sample_size);
-  logDebug(msg);
-  snprintf(msg, sizeof(msg), "[SOUND] Samples count = %i", samples_count);
-  logDebug(msg);
+  //snprintf(msg, sizeof(msg), "[SOUND] Sample size = %i", sample_size);
+  //logDebug(msg);
+  //snprintf(msg, sizeof(msg), "[SOUND] Samples count = %i", samples_count);
+  //logDebug(msg);
 }
 
 void writeDataToBuffer() {
-  logDebug("[SOUND] DAC1 available: " + String(dac1.available()));
-  logDebug("[SOUND] File eof:" + String(feof(file)));
+  //logDebug("[SOUND] DAC1 available: " + String(dac1.available()));
+  //logDebug("[SOUND] File eof:" + String(feof(file)));
 
   if (dac1.available() && !feof(file)) {
     logDebug("[SOUND] Playing sound file");
     while (!feof(file)) {
-      /* Read data from file. */
+      // Read data from file.
       uint16_t sample_data[256] = { 0 };
       fread(sample_data, sample_size, 256, file);
 
-      /* Get a free buffer for writing. */
+      // Get a free buffer for writing.
       SampleBuffer buf = dac1.dequeue();
 
-      /* Write data to buffer. */
+      // Write data to buffer.
       for (size_t i = 0; i < buf.size(); i++) {
         /* Scale down to 12 bit. */
         uint16_t const dac_val = ((static_cast<unsigned int>(sample_data[i]) + 32768) >> 4) & 0x0fff;
         buf[i] = dac_val;
       }
 
-      /* Write the buffer to DAC. */
+      // Write the buffer to DAC.
       dac1.write(buf);
     }
   } else {
